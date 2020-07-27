@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = 4000;
 
+/* import queries */
+const users = require('./queries/users');
+
 app.use(bodyParser.json())
 app.use(
     bodyParser.urlencoded({
@@ -17,3 +20,7 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`App running on port ${port}`)
 })
+
+/* USERS */
+app.post('/auth/signup', users.createUser);
+app.post('/auth/signin', users.loginUser);
