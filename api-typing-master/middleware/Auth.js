@@ -8,11 +8,12 @@ const db = require('../database')
  * @returns {object|void} response object 
  */
 const verifyToken = (req, res, next) => {
-    const token = req.headers['Authentification'];
+    const token = req.headers['authentication'];
     if (!token) {
         return res.status(400).send({ 'message': 'Token is not provided' });
     }
     const decoded = jwt.verify(token, process.env.SECRET);
+    console.log(decoded)
     const findAccount = 'SELECT * FROM users WHERE userid = $1';
     db.query(findAccount, [decoded.userid], (error, results) => {
     if (!results.rows[0]) {
@@ -21,7 +22,7 @@ const verifyToken = (req, res, next) => {
     if (error) {
         return res.status(400).send(error);
     }
-        req.account = { userid: decoded.userid };
+        req.users = { userid: decoded.userid };
         next();
     });
 }

@@ -6,6 +6,7 @@ const cors = require("cors");
 
 /* import queries */
 const users = require('./queries/users');
+const Auth = require('./middleware/Auth.js');
 
 
 app.use(cors());
@@ -25,5 +26,7 @@ app.listen(port, () => {
 })
 
 /* USERS */
+app.get('/users', Auth.verifyToken, users.getUser);
 app.post('/auth/signup', users.createUser);
 app.post('/auth/signin', users.loginUser);
+app.delete('/users', Auth.verifyToken, users.deleteUser);

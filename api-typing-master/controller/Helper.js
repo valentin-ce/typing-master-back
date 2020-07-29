@@ -52,7 +52,7 @@ const emailExist = (email) => {
  */
 const generateToken = (id) => {
     const token = jwt.sign({
-        userID : id
+        userid : id
     },
     process.env.SECRET, {expiresIn: '24h'}
     );

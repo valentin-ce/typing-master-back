@@ -4,6 +4,21 @@ const { uuid } = require('uuidv4');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+/**
+ * use to request account by decoded token
+ * @param {headers} token 
+ * @returns {object} user 
+ */
+const getUser = (request, response) => {
+  const token = request.headers['authentication'];
+  const decoded = jwt.verify(token, process.env.SECRET)
+  db.query('SELECT * FROM users WHERE userid = $1', [decoded.userid], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
 
 /**
  * Use to create account returning token
@@ -85,7 +100,27 @@ const loginUser = (req, res) => {
     });
   }
 
+/**
+ * 
+ * @param {params} account_id
+ * @returns {string} response 
+ */
+const deleteUser = (request, response) => {
+  const token = request.headers['authentication'];    
+    const decoded = jwt.verify(token, process.env.SECRET)
+    
+  db.query('DELETE FROM users WHERE userid = $1', [decoded.userID], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).send(`account deleted with ID: ${decoded.userID}`)
+  })
+}
+
+
 module.exports = {
+    getUser,
     createUser,
     loginUser,
+    deleteUser,
 }
