@@ -29,22 +29,6 @@ const comparePassword = (hashPassword, password) => {
 const isValidEmail = (email) => {
     return /\S+@\S+\.\S+/.test(email);
 };
-
-/**
- * verify if email already exists
- * @param {string} email 
- * @return {boolean} true or false
- */
-const emailExist = (email) => {
-    db.query('SELECT email FROM users WHERE email = $1', [email], (err, res) => {
-        if (err) {
-            throw err
-        }
-        console.log(res.rows)
-        return res.rows;
-    })
-}
-
 /**
  * generate token
  * @param {string} id
@@ -62,7 +46,6 @@ const generateToken = (id) => {
 module.exports = {
     generateToken,
     isValidEmail,
-    emailExist,
     comparePassword,
     hashPassword,
 };
