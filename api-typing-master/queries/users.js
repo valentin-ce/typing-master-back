@@ -38,7 +38,7 @@ const createUser = (req, res) => {
     }
     const checkEmail = 'SELECT * FROM users WHERE email = $1';
     db.query(checkEmail, [req.body.email], (error, results) => {
-      if (results.rows[0]) {
+      if (results.rows[0] != undefined) {
         return res.status(400).send({ error: 'Adresse e-mail déjà utilisée' })
       }
       if (error) {
