@@ -8,7 +8,25 @@ const db = require('../database')
  * @returns {object|void} response object 
  */
 const verifyToken = (req, res, next) => {
-    const token = req.headers['authentication'];
+    /*
+    const token = req.headers['Authorization'];
+    */
+    const authHeader = req.headers.authorization;
+
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+        console.log(token)
+        jwt.verify(token, process.env.TOKENSECRET, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+            req.user = user;
+            next();
+        });
+    } else {
+        res.sendStatus(401);
+    }
+    /*
     if (!token) {
         return res.status(400).send({ 'message': 'Token is not provided' });
     }
@@ -25,6 +43,7 @@ const verifyToken = (req, res, next) => {
         req.users = { userid: decoded.userid };
         next();
     });
+    */
 }
 
 module.exports = {

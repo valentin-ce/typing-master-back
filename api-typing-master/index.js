@@ -25,6 +25,7 @@ app.listen(port, () => {
     console.log(`App running on port ${port}`)
 })
 
+
 /* USERS */
 app.get('/users', Auth.verifyToken, users.getUser);
 app.post('/auth/signup', users.createUser);

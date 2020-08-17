@@ -2,6 +2,7 @@ const db = require('../database.js');
 const Helper = require('../controller/Helper')
 const { uuid } = require('uuidv4');
 const jwt = require('jsonwebtoken');
+const { idleCount } = require('../database.js');
 require('dotenv').config();
 
 /**
@@ -10,9 +11,9 @@ require('dotenv').config();
  * @returns {object} user 
  */
 const getUser = (request, response) => {
-  const token = request.headers['authentication'];
-  const decoded = jwt.verify(token, process.env.SECRET)
-  db.query('SELECT * FROM users WHERE userid = $1', [decoded.userid], (error, results) => {
+ const { userid } = request.user;
+ console.log(userid)
+  db.query('SELECT * FROM users WHERE userid = $1', [ userid ], (error, results) => {
     if (error) {
       throw error
     }
@@ -45,14 +46,17 @@ const createUser = (req, res) => {
         return res.status(400).send(error);
       }
       const hashPassword = Helper.hashPassword(req.body.password);
+      const dateTime = new Date();
       const createQuery = `INSERT INTO
-        users(userid, username, email, password)
-        VALUES($1, $2, $3, $4)
+        users(userid, username, email, emailverified, creationdate, password)
+        VALUES($1, $2, $3, $4, $5, $6)
         returning *`;
       const values = [
         uuid(),
         req.body.username,
         req.body.email,
+        'false',
+        dateTime.toISOString().slice(0,10),
         hashPassword
       ];
       db.query(createQuery, values, (error, results) => {
@@ -101,22 +105,20 @@ const loginUser = (req, res) => {
   }
 
 /**
- * 
- * @param {params} account_id
+ * Use to delete user by id 
+ * @param {params} userid
  * @returns {string} response 
  */
 const deleteUser = (request, response) => {
-  const token = request.headers['authentication'];    
-    const decoded = jwt.verify(token, process.env.SECRET)
-    
-  db.query('DELETE FROM users WHERE userid = $1', [decoded.userID], (error, results) => {
+  const { userid } = request.user;
+
+  db.query('DELETE FROM users WHERE userid = $1', [userid], (error, results) => {
     if (error) {
       throw error
     }
-    response.status(200).send(`account deleted with ID: ${decoded.userID}`)
+    response.status(200).send(`account deleted with ID: ${userid}`)
   })
 }
-
 
 module.exports = {
     getUser,
