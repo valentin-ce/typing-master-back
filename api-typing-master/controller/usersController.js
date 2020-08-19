@@ -85,7 +85,19 @@ const signinUser = async (req, res) => {
     })
 }
 
+const getUserById = async (req, res) => {
+    const { userid } = req.user;
+    console.log(userid)
+    db.query('SELECT * FROM users WHERE userid = $1', [userid], (error, results) => {
+        if (error) {
+            throw error
+        }
+        return res.status(200).send(results.rows)
+    })
+}
+
 module.exports = {
     signupUser,
     signinUser,
+    getUserById,
 }
