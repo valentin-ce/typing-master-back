@@ -6,6 +6,7 @@ const app = express();
 
 const Auth = require('./middleware/Auth')
 const usersController = require('./controller/usersController')
+const mapsController = require('./controller/mapsController')
 
 
 app.use(cors());
@@ -18,6 +19,9 @@ app.post('/api/v1/auth/signin', usersController.signinUser)
 
 /* Users */
 app.get('/api/v1/user', Auth.verifyToken, usersController.getUserById)
+
+/* Maps */
+app.get('/api/v1/maps', mapsController.getMaps)
 
 app.listen(port).on('listening', ()=> {
     console.log(`listening on port ${port}`)
