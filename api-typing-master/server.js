@@ -19,6 +19,7 @@ app.post('/api/v1/auth/signin', usersController.signinUser)
 
 /* Users */
 app.get('/api/v1/user', Auth.verifyToken, usersController.getUserById)
+app.delete('/api/v1/user', Auth.verifyToken, usersController.deleteUser)
 
 /* Maps */
 app.get('/api/v1/maps', mapsController.getMaps)

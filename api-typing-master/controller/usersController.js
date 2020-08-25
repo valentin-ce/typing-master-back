@@ -71,7 +71,7 @@ const signinUser = async (req, res) => {
 
     const signinUserQuery = 'SELECT * FROM users WHERE email = $1'
     db.query(signinUserQuery, [email], (error, results) => {
-        if (results === undefined) {
+        if (!results.rows[0]) {
             return res.status(400).send({ error: 'Aucun utilisateur enregister avec cette adresse email'})
         }
         if (error) {
@@ -85,9 +85,13 @@ const signinUser = async (req, res) => {
     })
 }
 
+/**
+ * use to get user with id whith decoded token 
+ * @param {object} req 
+ * @returns {string} res 
+ */
 const getUserById = async (req, res) => {
     const { userid } = req.user;
-    console.log(userid)
     db.query('SELECT * FROM users WHERE userid = $1', [userid], (error, results) => {
         if (error) {
             throw error
@@ -96,8 +100,24 @@ const getUserById = async (req, res) => {
     })
 }
 
+/**
+ * use to delete user by id with decoded token
+ * @param {object} req 
+ * @returns {string} res 
+ */
+const deleteUser = (req, res) => {
+    const { userid } = req.user;
+    db.query('DELETE FROM users WHERE userid = $1', [userid], (error, results) => {
+        if (error) {
+            throw error
+        }
+        return res.status(200).send(`user deleted with ID : ${userid}`)
+    })
+}
+
 module.exports = {
     signupUser,
     signinUser,
     getUserById,
+    deleteUser,
 }

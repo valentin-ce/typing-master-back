@@ -59,7 +59,7 @@ const isEmpty = (input) => {
  * @param {string} id
  * @return {string} token
  */
-const generateToken = (id) => {
+const generateToken = (id, username) => {
     const token = jwt.sign({
         userid : id
     },
