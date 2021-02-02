@@ -23,6 +23,7 @@ app.delete('/api/v1/user', Auth.verifyToken, usersController.deleteUser)
 
 /* Maps */
 app.get('/api/v1/maps', mapsController.getMaps)
+app.post('/api/v1/maps', mapsController.addMaps)
 
 app.listen(port).on('listening', ()=> {
     console.log(`listening on port ${port}`)
